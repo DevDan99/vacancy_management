@@ -27,10 +27,10 @@ public class JobEntity {
 	private String level;
 
 	@ManyToOne() // Relacionamento muitos-para-um com a entidade CompanyEntity.
-	@JoinColumn(name = "company_id") // Especifica que o relacionamento será feito através da coluna company_id na tabela job.
+	@JoinColumn(name = "company_id", insertable = false, updatable = false) // Especifica que o relacionamento será feito através da coluna company_id na tabela job.
 	private CompanyEntity companyEntity; // Este campo representa o objeto empresa relacionado à vaga.
 
-	@Column(name = "company_id", insertable = false, updatable = false) // Mapeia o campo companyId para a coluna "company_id" na tabela "job".
+	@Column(name = "company_id") // Mapeia o campo companyId para a coluna "company_id" na tabela "job".
 	private UUID companyId;
 
 	@CreationTimestamp // Anotação Hibernate para definir automaticamente o timestamp de criação.
