@@ -12,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 // Classe de entidade que representa uma vaga de emprego no sistema de gestão de vagas.
@@ -24,6 +25,8 @@ public class JobEntity {
 	private UUID id;
 	private String description;
 	private String benefits;
+
+	@NotBlank(message = "O campo é obrigatório.") // Validação para garantir que o campo não esteja em branco.
 	private String level;
 
 	@ManyToOne() // Relacionamento muitos-para-um com a entidade CompanyEntity.
