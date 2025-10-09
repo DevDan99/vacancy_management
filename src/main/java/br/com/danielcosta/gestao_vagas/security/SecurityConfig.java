@@ -1,15 +1,20 @@
 package br.com.danielcosta.gestao_vagas.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @Configuration // Indica que essa classe é uma classe de configuração do Spring. Assim que inicializar a aplicação, o Spring vai
 					// carregar essa classe e aplicar as configurações de segurança que forem definidas aqui.
 public class SecurityConfig {
+
+	@Autowired
+	private SecurityFilter securityFilter;
 
 	// A anotação @Bean indica que o método retorna um bean gerenciado pelo Spring, que neste caso é a cadeia de filtros de
 	// segurança.
@@ -25,7 +30,12 @@ public class SecurityConfig {
 							.requestMatchers("/company/").permitAll() // Permite acesso sem autenticação ao endpoint /company
 							.requestMatchers("/auth/company").permitAll();
 					auth.anyRequest().authenticated(); // Exige autenticação para qualquer outra requisição
-				});
+				})
+
+				// Aqui você pode adicionar filtros personalizados, como um filtro JWT,
+				// antes de outros filtros padrão do Spring Security.
+				.addFilterBefore(securityFilter, BasicAuthenticationFilter.class);
+
 		return http.build(); // Constrói e retorna a cadeia de filtros de segurança configurada.
 	}
 

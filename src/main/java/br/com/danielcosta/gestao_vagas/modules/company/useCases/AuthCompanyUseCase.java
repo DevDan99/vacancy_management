@@ -1,5 +1,8 @@
 package br.com.danielcosta.gestao_vagas.modules.company.useCases;
 
+import java.time.Duration;
+import java.time.Instant;
+
 import javax.naming.AuthenticationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +48,7 @@ public class AuthCompanyUseCase {
 		Algorithm algorithm = Algorithm.HMAC256(secretKey);
 
 		var token = JWT.create().withIssuer("Javagas") // Define o emissor do token
+				.withExpiresAt(Instant.now().plus(Duration.ofHours(2))) // Define a expiração do token para 2 horas a partir de agora
 				.withSubject(company.getId().toString()) // withSubject recebe o id do usuário autenticado como String
 				.sign(algorithm); // Assina o token com o algoritmo e a chave secreta
 		return token;
