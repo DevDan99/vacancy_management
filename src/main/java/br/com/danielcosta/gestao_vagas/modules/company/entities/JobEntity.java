@@ -13,11 +13,17 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 // Classe de entidade que representa uma vaga de emprego no sistema de gestão de vagas.
 @Entity(name = "job") // Anotação JPA para mapear esta classe para a tabela "job" no banco de dados.
 @Data
+@Builder // Anotação do Lombok para gerar getters, setters, toString, equals e hashCode automaticamente.
+@AllArgsConstructor // Construtor com todos os argumentos necessário para o Lombok.
+@NoArgsConstructor // Construtor sem argumentos necessário para o JPA.
 public class JobEntity {
 
 	@Id

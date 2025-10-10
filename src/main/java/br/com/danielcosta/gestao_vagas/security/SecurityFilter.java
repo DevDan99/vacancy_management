@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -23,7 +24,6 @@ public class SecurityFilter extends OncePerRequestFilter {
 	private JWTProvider jwtProvider; // Injeção de dependência do JWTProvider, que é responsável por validar tokens JWT.
 
 	@Override // Implementa o método doFilterInternal da classe OncePerRequestFilter, que é chamado para cada requisição HTTP.
-
 	// O método doFilterInternal é onde você pode adicionar a lógica de filtragem personalizada para cada requisição.
 	// Ele recebe o objeto HttpServletRequest (representando a requisição), HttpServletResponse (representando a resposta) e
 	// FilterChain (para continuar a cadeia de filtros).
@@ -32,7 +32,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 	// Após a lógica personalizada, você deve chamar filterChain.doFilter(request, response) para continuar a cadeia de
 	// filtros e permitir que a requisição prossiga.
 	// Se a requeisição não for autorizada, você pode lançar uma exceção ou configurar a resposta HTTP adequadamente.
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+	protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
 
 		SecurityContextHolder.getContext().setAuthentication(null); // Limpa o contexto de segurança para cada requisição
 		String header = request.getHeader("Authorization"); // Pega o token do cabeçalho Authorization
