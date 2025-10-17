@@ -13,4 +13,6 @@ public interface CandidateRepository extends JpaRepository<CandidateEntity, UUID
 	// Método é do JpaRepository, que cria a query automaticamente com base no nome do método.
 	// Optional é usado para evitar null pointer exceptions e indicar que o resultado pode estar ausente.
 	Optional<CandidateEntity> findByUsernameOrEmail(String username, String email);
+
+	Optional<CandidateEntity> findByUsername(String username);
 }

@@ -16,6 +16,9 @@ public class SecurityConfig {
 	@Autowired
 	private SecurityFilter securityFilter;
 
+	@Autowired
+	private SecurityCandidateFilter securityCandidateFilter;
+
 	// A anotação @Bean indica que o método retorna um bean gerenciado pelo Spring, que neste caso é a cadeia de filtros de
 	// segurança.
 	// Na pratica ele sobreescreve a configuração padrão de segurança do Spring Boot.
@@ -28,13 +31,15 @@ public class SecurityConfig {
 				.authorizeHttpRequests(auth -> {
 					auth.requestMatchers("/candidate/").permitAll() // Permite acesso sem autenticação ao endpoint /candidate/
 							.requestMatchers("/company/").permitAll() // Permite acesso sem autenticação ao endpoint /company
-							.requestMatchers("/auth/company").permitAll();
+							.requestMatchers("/auth/company").permitAll()
+							.requestMatchers("/candidate/auth").permitAll();
 					auth.anyRequest().authenticated(); // Exige autenticação para qualquer outra requisição
 				})
 
 				// Aqui você pode adicionar filtros personalizados, como um filtro JWT,
 				// antes de outros filtros padrão do Spring Security.
-				.addFilterBefore(securityFilter, BasicAuthenticationFilter.class);
+				.addFilterBefore(securityFilter, BasicAuthenticationFilter.class)
+				.addFilterBefore(securityCandidateFilter, BasicAuthenticationFilter.class);
 
 		return http.build(); // Constrói e retorna a cadeia de filtros de segurança configurada.
 	}

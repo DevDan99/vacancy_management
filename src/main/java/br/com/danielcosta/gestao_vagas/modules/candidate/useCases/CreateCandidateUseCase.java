@@ -1,6 +1,7 @@
 package br.com.danielcosta.gestao_vagas.modules.candidate.useCases;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import br.com.danielcosta.gestao_vagas.exceptions.UserFoundException;
@@ -13,6 +14,9 @@ public class CreateCandidateUseCase {
 	@Autowired // Injeção de dependência do Spring.
 	private CandidateRepository candidateRepository;
 
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
 	public CandidateEntity execute(CandidateEntity candidate) {
 		// This é o meu objeto atual do tipo candidateController, então quando uso
 		// this.candidateRepository.findByUsernameOrEmail estou acessando o objeto do tipo candidateController usando a
@@ -23,6 +27,10 @@ public class CreateCandidateUseCase {
 				(user) -> {
 					throw new UserFoundException("Usuário já cadastrado");
 				});
+
+		var password = passwordEncoder.encode(candidate.getPassword());
+
+		candidate.setPassword(password);
 
 		// Salva o candidato no banco de dados e retorna o candidato salvo.
 		// O método save() retorna a entidade salva, que pode conter informações adicionais, como o ID gerado.
