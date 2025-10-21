@@ -30,16 +30,16 @@ public class SecurityConfig {
 		http.csrf(csrf -> csrf.disable()) // Desabilita a proteção CSRF
 				.authorizeHttpRequests(auth -> {
 					auth.requestMatchers("/candidate/").permitAll() // Permite acesso sem autenticação ao endpoint /candidate/
-							.requestMatchers("/company/").permitAll() // Permite acesso sem autenticação ao endpoint /company
-							.requestMatchers("/auth/company").permitAll()
+							.requestMatchers("/company/").permitAll() // Permite acesso sem autenticação ao endpoint /company/
+							.requestMatchers("/company/auth").permitAll()
 							.requestMatchers("/candidate/auth").permitAll();
 					auth.anyRequest().authenticated(); // Exige autenticação para qualquer outra requisição
 				})
 
 				// Aqui você pode adicionar filtros personalizados, como um filtro JWT,
 				// antes de outros filtros padrão do Spring Security.
-				.addFilterBefore(securityFilter, BasicAuthenticationFilter.class)
-				.addFilterBefore(securityCandidateFilter, BasicAuthenticationFilter.class);
+				.addFilterBefore(securityCandidateFilter, BasicAuthenticationFilter.class)
+				.addFilterBefore(securityFilter, BasicAuthenticationFilter.class);
 
 		return http.build(); // Constrói e retorna a cadeia de filtros de segurança configurada.
 	}

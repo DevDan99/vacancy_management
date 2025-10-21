@@ -2,6 +2,7 @@ package br.com.danielcosta.gestao_vagas.modules.company.useCases;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Arrays;
 
 import javax.naming.AuthenticationException;
 
@@ -15,6 +16,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 
 import br.com.danielcosta.gestao_vagas.modules.company.dto.AuthCompanyDTO;
+import br.com.danielcosta.gestao_vagas.modules.company.dto.AuthCompanyResponseDTO;
 import br.com.danielcosta.gestao_vagas.modules.company.repositories.CompanyRepository;
 
 @Service
@@ -29,7 +31,7 @@ public class AuthCompanyUseCase {
 	@Autowired
 	private PasswordEncoder passwordEncoder; // Usado para codificar senhas.
 
-	public String execute(AuthCompanyDTO authCompanyDTO) throws AuthenticationException {
+	public AuthCompanyResponseDTO execute(AuthCompanyDTO authCompanyDTO) throws AuthenticationException {
 		var company = this.companyRepository.findByUsername(authCompanyDTO.getUsername()).orElseThrow(
 				() -> {
 					throw new UsernameNotFoundException("Username/Password invalid");
@@ -47,10 +49,19 @@ public class AuthCompanyUseCase {
 		// Chave secreta para assinar o token (deve ser segura e mantida em segredo)
 		Algorithm algorithm = Algorithm.HMAC256(secretKey);
 
+		var expiresIn = Instant.now().plus(Duration.ofHours(2)); // Define a expiração do token para 2 horas a partir de agora
+
 		var token = JWT.create().withIssuer("Javagas") // Define o emissor do token
-				.withExpiresAt(Instant.now().plus(Duration.ofHours(2))) // Define a expiração do token para 2 horas a partir de agora
 				.withSubject(company.getId().toString()) // withSubject recebe o id do usuário autenticado como String
+				.withExpiresAt(expiresIn)
+				.withClaim("roles", Arrays.asList("COMPANY")) // Adiciona uma reivindicação personalizada "roles" ao token
 				.sign(algorithm); // Assina o token com o algoritmo e a chave secreta
-		return token;
+
+		AuthCompanyResponseDTO responseDTO = AuthCompanyResponseDTO.builder()
+				.access_token(token)
+				.expires_in(expiresIn.toEpochMilli())
+				.build();
+
+		return responseDTO;
 	}
 }
